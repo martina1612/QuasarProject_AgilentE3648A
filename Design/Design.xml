@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<d:design projectShortName="GpibPowerSupplyController" xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd ">
+  <d:class name="GpibPowerSupply">
+  	<d:devicelogic></d:devicelogic>
+  	<d:configentry dataType="OpcUa_Int16" name="board">
+  		<d:documentation>Specifies which GPIB interface board the device is connected to.</d:documentation></d:configentry>
+  	<d:configentry dataType="OpcUa_Int16" name="primaryAddress">
+  		<d:documentation>Specifies the GPIB primary address of the device to be opened.</d:documentation></d:configentry>
+  	<d:configentry dataType="OpcUa_Int16" name="secondaryAddress"
+  		defaultValue="-1">
+  		<d:documentation>
+  			Specifies the GPIB secondary address of the device to be
+  			opened. If not specified the default value NO_SAD will be used.
+  		</d:documentation>
+  	</d:configentry>
+  	<d:configentry dataType="OpcUa_Int16" name="timeOut" defaultValue="-1">
+  		<d:documentation>Specifies the timeout for i/o operations. If not specified the default value T10s will be used.</d:documentation></d:configentry>
+  	<d:configentry dataType="OpcUa_Int16" name="send_eoi" defaultValue="0">
+  		<d:documentation>If nonzero the EOI line will be asserted with the last byte sent during writes. If not specified the default value 0 will be used.</d:documentation></d:configentry>
+  	<d:configentry dataType="OpcUa_Int16" name="eos" defaultValue="1">
+  		<d:documentation>Specifies the end-of-string character and whether or not its reception should terminatereades. If not specified the default value 1 will be used. More info at https://linux-gpib.sourceforge.io/doc_html/reference-function-ibeos.html</d:documentation></d:configentry>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="UaString" name="idn" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>
+  			If the communication to the device is succesful, will be
+  			filled with the identity of the device (reply to *IDN?
+  			command).
+  		</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Int16" name="device_descriptor" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>
+  			If the communication to the device is succesful, will be
+  			filled with the non-negative device descriptor (returned
+  			by ibdev() function, see
+  			https://linux-gpib.sourceforge.io/doc_html/reference-function-ibdev.html).
+  		</d:documentation>
+  	</d:cachevariable>
+  	<d:hasobjects instantiateUsing="configuration" class="Commands"
+  		maxOccurs="1" minOccurs="1">
+  	</d:hasobjects>
+  	<d:hasobjects instantiateUsing="configuration" class="OnRequest"
+  		maxOccurs="1" minOccurs="1">
+  	</d:hasobjects>
+  	<d:hasobjects instantiateUsing="configuration" class="Channel"
+  		minOccurs="1">
+  	</d:hasobjects>
+  </d:class>
+  <d:class name="Commands">
+  	<d:devicelogic></d:devicelogic>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Boolean" name="reset" nullPolicy="nullAllowed"
+  		addressSpaceWrite="delegated" initialValue="0"
+  		initialStatus="OpcUa_Good">
+  		<d:documentation>Normally set to FALSE. When set to TRUE the reset command (*RST) is sent to the device. Then the variable is automatically restored to FALSE.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Boolean" name="clear" nullPolicy="nullAllowed"
+  		addressSpaceWrite="delegated" initialValue="0"
+  		initialStatus="OpcUa_Good">
+  		<d:documentation>Normally set to FALSE. When set to TRUE the clear command (*CLS) is sent to the device. Then the variable is automatically restored to FALSE.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Boolean" name="clearTrip" nullPolicy="nullAllowed"
+  		addressSpaceWrite="delegated" initialValue="0"
+  		initialStatus="OpcUa_Good">
+  		<d:documentation>Normally set to FALSE. When set to TRUE the clear trip command (*VOLT:PROT:clear) is sent to the device. Then the variable is automatically restored to FALSE.</d:documentation>
+  	</d:cachevariable>
+  </d:class>
+    <d:class name="OnRequest">
+  	<d:devicelogic></d:devicelogic>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Boolean" name="askError" nullPolicy="nullAllowed"
+  		addressSpaceWrite="delegated" initialValue="0"
+  		initialStatus="OpcUa_Good">
+  		<d:documentation>Normally set to FALSE. When set to TRUE the device is queried for errors (SYST:ERR?). The reply is stored in the cachevariable error. Then the variable is automatically restored to FALSE.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="UaString" name="error" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>This variable stores the reply from the device when the askError variable is triggered.</d:documentation>
+  	</d:cachevariable>
+  </d:class>
+  <d:class name="Channel">
+  	<d:devicelogic></d:devicelogic>
+  	<d:configentry dataType="OpcUa_Int16" name="number" isKey="true"
+  		storedInDeviceObject="true">
+  		<d:configRestriction>
+  			<d:restrictionByBounds minInclusive="1" /></d:configRestriction>
+  	</d:configentry>
+  	<d:hasobjects instantiateUsing="configuration"
+  		class="Settings" minOccurs="1" maxOccurs="1">
+  	</d:hasobjects>
+  	<d:hasobjects instantiateUsing="configuration"
+  		class="ReadbackSettings" minOccurs="1" maxOccurs="1">
+  	</d:hasobjects>
+  	<d:hasobjects instantiateUsing="configuration"
+  		class="Actual" minOccurs="1" maxOccurs="1">
+  	</d:hasobjects>
+  </d:class>
+  <d:class name="ReadbackSettings">
+  	<d:devicelogic></d:devicelogic>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Float" name="i0" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>Current limit actually set on the voltage channel.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Float" name="v0" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>Voltage setting actually set on the voltage channel.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Boolean" name="onOff" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>On/Off setting actually set on the voltage channel.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="UaString" name="vRange" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>Voltage range actually set on the voltage channel.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Boolean" name="vProtection" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>Indicates whether the voltage protection is active or deactivated.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Float" name="iRangeMax" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>Maximum limit of the current range.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Float" name="iRangeMin" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>Minimum limit of the current range.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Float" name="vRangeMax" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>Maximum limit of the voltage range.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Float" name="vRangeMin" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>Minimum limit of the voltage range.</d:documentation>
+  	</d:cachevariable>
+  </d:class>
+  <d:class name="Settings">
+  	<d:devicelogic></d:devicelogic>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Double" name="i0" nullPolicy="nullAllowed"
+  		addressSpaceWrite="delegated" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>User-writable setting of the current limit. When changed, the new setting will be sent to the channel. If succesful, the corresponding variable in the ReadbackSettings class should change accordingly.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Double" name="v0" nullPolicy="nullAllowed"
+  		addressSpaceWrite="delegated" initialStatus="OpcUa_BadWaitingForInitialData">
+ 		<d:documentation>User-writable voltage setting. When changed, the new setting will be sent to the channel. If succesful, the corresponding variable in the ReadbackSettings class should change accordingly.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Boolean" name="onOff" nullPolicy="nullAllowed"
+  		addressSpaceWrite="delegated" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>User-writable setting to switch on/off the channel. When changed, the new setting will be sent to the channel. If succesful, the corresponding variable in the ReadbackSettings class should change accordingly.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="UaString" name="vRange" nullPolicy="nullAllowed"
+  		addressSpaceWrite="delegated" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>User-writable setting of the voltage range. When changed, the new setting will be sent to the channel. If succesful, the corresponding variable in the ReadbackSettings class should change accordingly.</d:documentation>
+  		<d:configRestriction>
+  			<d:restrictionByEnumeration>
+  				<d:enumerationValue value="low" /><d:enumerationValue
+  					value="high" /></d:restrictionByEnumeration></d:configRestriction>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Boolean" name="vProtection" nullPolicy="nullAllowed"
+  		addressSpaceWrite="delegated" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>User-writable setting to switch on/off the voltage protection. When changed, the new setting will be sent to the channel. If succesful, the corresponding variable in the ReadbackSettings class should change accordingly.</d:documentation>
+  	</d:cachevariable>
+  </d:class>
+  <d:class name="Actual">
+  	<d:devicelogic></d:devicelogic>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Boolean" name="isOn" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>Indicates whether the channel is on.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Boolean" name="trip" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>Indicates whether the channel tripped.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Float" name="iMon" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>Current measured on the output channel.</d:documentation>
+  	</d:cachevariable>
+  	<d:cachevariable initializeWith="valueAndStatus"
+  		dataType="OpcUa_Float" name="vMon" nullPolicy="nullAllowed"
+  		addressSpaceWrite="forbidden" initialStatus="OpcUa_BadWaitingForInitialData">
+  		<d:documentation>Actual voltage measured on the output channel.</d:documentation>
+  	</d:cachevariable>
+  </d:class>
+  <d:root>
+  	<d:hasobjects instantiateUsing="configuration" class="GpibPowerSupply"></d:hasobjects></d:root>
+</d:design>
