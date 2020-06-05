@@ -2,6 +2,11 @@
 <d:design projectShortName="GpibPowerSupplyController" xmlns:d="http://cern.ch/quasar/Design" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Design Design.xsd ">
   <d:class name="GpibPowerSupply">
   	<d:devicelogic></d:devicelogic>
+  	<d:configentry dataType="OpcUa_UInt16" name="number" isKey="true"
+  		storedInDeviceObject="true">
+  		<d:configRestriction>
+  			<d:restrictionByBounds minInclusive="1" ></d:restrictionByBounds></d:configRestriction>
+  	</d:configentry>
   	<d:configentry dataType="OpcUa_Int16" name="board">
   		<d:documentation>Specifies which GPIB interface board the device is connected to.</d:documentation></d:configentry>
   	<d:configentry dataType="OpcUa_Int16" name="primaryAddress">
@@ -85,7 +90,7 @@
   </d:class>
   <d:class name="Channel">
   	<d:devicelogic></d:devicelogic>
-  	<d:configentry dataType="OpcUa_Int16" name="number" isKey="true"
+  	<d:configentry dataType="OpcUa_UInt16" name="number" isKey="true"
   		storedInDeviceObject="true">
   		<d:configRestriction>
   			<d:restrictionByBounds minInclusive="1" /></d:configRestriction>
