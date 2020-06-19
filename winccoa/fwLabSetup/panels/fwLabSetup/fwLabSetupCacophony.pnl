@@ -18,7 +18,7 @@
    <properties>
     <prop name="serialId">0</prop>
     <prop name="Type"></prop>
-    <prop name="RefPoint">220 250</prop>
+    <prop name="RefPoint">220 270</prop>
     <prop name="Enable">True</prop>
     <prop name="Visible">True</prop>
     <prop name="ForeColor">_ButtonText</prop>
@@ -32,7 +32,7 @@
     <prop name="Font">
      <prop name="en_US.utf8">Sans Serif,-1,12,5,50,0,0,0,0,0</prop>
     </prop>
-    <prop name="Location">220 217</prop>
+    <prop name="Location">220 237</prop>
     <prop name="Size">151 81</prop>
     <prop name="BorderStyle">Styled</prop>
     <prop name="Text">
@@ -52,7 +52,7 @@ main(mapping event)
    <properties>
     <prop name="serialId">1</prop>
     <prop name="Type"></prop>
-    <prop name="RefPoint">220 357</prop>
+    <prop name="RefPoint">220 377</prop>
     <prop name="Enable">True</prop>
     <prop name="Visible">True</prop>
     <prop name="ForeColor">_ButtonText</prop>
@@ -66,7 +66,7 @@ main(mapping event)
     <prop name="Font">
      <prop name="en_US.utf8">Sans Serif,-1,12,5,50,0,0,0,0,0</prop>
     </prop>
-    <prop name="Location">220 324</prop>
+    <prop name="Location">220 344</prop>
     <prop name="Size">151 81</prop>
     <prop name="BorderStyle">Styled</prop>
     <prop name="Text">
@@ -78,7 +78,7 @@ main(mapping event)
 
 main()
 {
-parseConfig (&quot;/home/ressegotti/DCS/quasar/mytest/opcua-server/bin/config.xml&quot;, // configFileName
+parseConfig (&quot;&lt;path-to-quasar-project&gt;/bin/config.xml&quot;, // configFileName
              true, // createDps
              true, // assignAddresses
              true  // continueOnError
@@ -106,20 +106,23 @@ parseConfig (&quot;/home/ressegotti/DCS/quasar/mytest/opcua-server/bin/config.xm
     <prop name="LineType">[solid,oneColor,JoinBevel,CapProjecting,1]</prop>
     <prop name="BorderZoomable">False</prop>
     <prop name="FillType">[outline]</prop>
+    <prop name="Geometry">1 0 0 1.115577889447236 0 -0.924623115577889</prop>
     <prop name="Location">10 10</prop>
     <prop name="Size">586 196</prop>
     <prop name="Font">
-     <prop name="en_US.utf8">Sans Serif,9,-1,5,50,0,0,0,0,0</prop>
+     <prop name="en_US.utf8">Sans Serif,-1,12,5,50,0,0,0,0,0</prop>
     </prop>
     <prop name="Text">
      <prop name="en_US.utf8">You need first:
-** execute following commands in the home folder of your Quasar OPC server      (replace &lt;path-to-project> with the appropriate path)
+** execute following commands in the home folder of your Quasar OPC server      (replace &lt;path-to-quasar-project> with the appropriate path)
 
     python Cacophony/generateStuff.py --dpt_prefix Gpib_ --server_name OPCUA_LABSETUP \     --driver_number 10 --subscription OPCUA_LABSETUP_DefaultSubscription
 
-    cp Cacophony/generated/*ctl &lt;path-to-project>/scripts/libs/
+    cp Cacophony/generated/*ctl &lt;path-to-quasar-project>/scripts/libs/
  
-** double click on button "2) Create DPs" to edit its "clicked" script and replace &lt;path-to-project> with the appropriate     path (then save the change and close the window).
+** double click on button "2) Create DPs" to edit its "clicked" script and 
+    replace &lt;path-to-quasar-project> with the appropriate path (then save the change and 
+    close the window).
 
 Then you can run the panel and click on the buttons in the shown order.</prop>
     </prop>
