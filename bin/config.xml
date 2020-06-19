@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://cern.ch/quasar/Configuration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cern.ch/quasar/Configuration ../Configuration/Configuration.xsd ">
+	<GpibPowerSupply name="ps1" board="0" primaryAddress="6">
+		<Commands name="commands1"></Commands>
+		<OnRequest name="onRequest1"></OnRequest>
+		<Channel name="channel1" number="1">
+			<Settings name="settingsChannel1"></Settings>
+			<ReadbackSettings name="readbackSettingsChannel1"></ReadbackSettings>
+			<Actual name="actualChannel1"></Actual>
+		</Channel>
+	</GpibPowerSupply>
+
+</configuration>
