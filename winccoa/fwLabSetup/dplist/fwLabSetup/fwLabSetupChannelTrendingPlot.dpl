@@ -1,0 +1,44 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+ChannelTrending2	FwTrendingPlot	2859739
+
+# DpValue
+Manager/User	ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+UI (1)/0	ChannelTrending2.plotTitle	FwTrendingPlot	"{channel}Trending"	0x8300000000200101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.dpes	FwTrendingPlot	"{channel}/actual.iMon", "{channel}/actual.vMon", "{channel}/actual.isOn", "{channel}/actual.trip", "", "", "", ""	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.legendTexts	FwTrendingPlot	"iMon", "vMon", "isOn", "trip", "", "", "", ""	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.colors	FwTrendingPlot	"FwTrendingCurve1", "FwTrendingCurve2", "FwTrendingCurve3", "FwTrendingCurve4", "FwTrendingCurve5", "FwTrendingCurve6", "FwTrendingCurve7", "FwTrendingCurve8"	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.plotBackColor	FwTrendingPlot	"FwTrendingTrendBackground"	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.legend	FwTrendingPlot	1	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.isTemplate	FwTrendingPlot	0	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.curvesHidden	FwTrendingPlot	0, 0, 0, 0, 1, 1, 1, 1	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.yRangeMin	FwTrendingPlot	-1, 0, -1, 0, 0, 0, 0, 0	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.yRangeMax	FwTrendingPlot	10, 0, 2, 0, 0, 0, 0, 0	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.plotType	FwTrendingPlot	1	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.templateName	FwTrendingPlot	""	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.timeRange	FwTrendingPlot	3600	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.isLogarithmic	FwTrendingPlot	0	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.curveTypes	FwTrendingPlot	1, 1, 1, 1, 1, 1, 1, 1	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.plotForeColor	FwTrendingPlot	"FwTrendingTrendForeground"	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.grid	FwTrendingPlot	1	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.model	FwTrendingPlot	"Value over time"	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.xAxii	FwTrendingPlot		0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.xDpes	FwTrendingPlot		0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.xRangeMin	FwTrendingPlot		0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.xRangeMax	FwTrendingPlot		0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.xLegendTexts	FwTrendingPlot		0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.markerType	FwTrendingPlot	0	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.accessControl.save	FwTrendingPlot	""	0x8300000000000101	15.06.2020 09:22:28.452
+UI (1)/0	ChannelTrending2.controlBar	FwTrendingPlot	0	0x8300000000000101	15.06.2020 09:22:28.451
+UI (1)/0	ChannelTrending2.axii	FwTrendingPlot	1, 1, 1, 1, 0, 0, 0, 0	0x8300000000000101	15.06.2020 09:22:28.450
+UI (1)/0	ChannelTrending2.axiiPos	FwTrendingPlot	2, 2, 3, 3, 2, 2, 2, 2	0x8300000000000101	15.06.2020 09:22:28.451
+UI (1)/0	ChannelTrending2.axiiLink	FwTrendingPlot	1, 1, 3, 3, 1, 1, 1, 1	0x8300000000000101	15.06.2020 09:22:28.451
+UI (1)/0	ChannelTrending2.defaultFont	FwTrendingPlot	"MS Shell Dlg 2,8,-1,5,50,0,0,0,0,0"	0x8300000000200101	15.06.2020 09:22:28.451
+UI (1)/0	ChannelTrending2.curveStyle	FwTrendingPlot	"[solid,oneColor,JoinMiter,CapButt,0]"	0x8300000000200101	15.06.2020 09:22:28.451
+UI (1)/0	ChannelTrending2.xAxiiFormat	FwTrendingPlot	"%d/%m", "%H:%M"	0x8300000000000101	15.06.2020 09:22:28.451
+UI (1)/0	ChannelTrending2.legendValuesFormat	FwTrendingPlot	"", "", "", "", "", "", "", ""	0x8300000000000101	15.06.2020 09:22:28.452
+UI (1)/0	ChannelTrending2.yAxiiFormat	FwTrendingPlot	"", "", "", "", "", "", "", ""	0x8300000000000101	15.06.2020 09:22:28.452
+UI (1)/0	ChannelTrending2.alarmLimitsVisible	FwTrendingPlot	0, 0, 0, 0, 0, 0, 0, 0	0x8300000000000101	15.06.2020 09:22:28.452
+UI (1)/0	ChannelTrending2.saveToUserFolder	FwTrendingPlot	0	0x8300000000000101	15.06.2020 09:22:28.452

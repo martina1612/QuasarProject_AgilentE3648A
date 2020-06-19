@@ -1,0 +1,64 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+_OPCUA10	_OPCUA	2859746
+_OPCUA_LABSETUP	_OPCUAServer	2859747
+_OPCUA_LABSETUP_DefaultSubscription	_OPCUASubscription	2859749
+
+# Aliases/Comments
+AliasId	AliasName	CommentName
+_OPCUA_LABSETUP_DefaultSubscription.	""	lt:1 LANG:10001 "Quasar OPC UA server default subscription@@"
+
+# DpValue
+Manager/User	ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+UI (1)/0	_OPCUA10.Config.Servers	_OPCUA	"OPCUA_LABSETUP"	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA10.Command.AddServer	_OPCUA	"OPCUA_LABSETUP"	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP.Config.ConnInfo	_OPCUAServer	"opc.tcp://control-6.pixel.ge.infn.it:4841/"	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP.Config.AccessInfo	_OPCUAServer	""	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP.Config.Password	_OPCUAServer	"5AA09AC6C9D08C80"	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP.Config.Security.Policy	_OPCUAServer	0	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP.Config.Security.MessageMode	_OPCUAServer	0	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP.Config.Security.Certificate	_OPCUAServer	""	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP.Config.Active	_OPCUAServer	1	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP.Config.ReconnectTimer	_OPCUAServer	10	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP.Config.StatusMapping	_OPCUAServer		0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP.Config.Separator	_OPCUAServer	"."	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP.Config.Subscriptions	_OPCUAServer	_OPCUA_LABSETUP_DefaultSubscription	0x8300000000000101	19.06.2020 13:14:41.529
+DRV (10)/0	_OPCUA_LABSETUP.State.ConnState	_OPCUAServer	1	0x8300000000300101	19.06.2020 13:09:08.681
+DRV (10)/0	_OPCUA_LABSETUP.State.ServerState	_OPCUAServer		0x8300000000200101	19.06.2020 13:22:01.188
+DRV (10)/0	_OPCUA_LABSETUP.State.StartTime	_OPCUAServer	19.06.2020 13:04:22.014	0x8300000000000101	19.06.2020 13:09:08.691
+DRV (10)/0	_OPCUA_LABSETUP.State.VendorInfo	_OPCUAServer	"open62541 OPC UA Server - Build: Jun 11 2020 17:52:46 by open62541"	0x8300000000000101	19.06.2020 13:09:08.691
+UI (1)/0	_OPCUA_LABSETUP.Command.GQ	_OPCUAServer	0	0x8300000000000101	19.06.2020 13:10:54.294
+UI (1)/0	_OPCUA_LABSETUP.Redu.Config.ConnInfo	_OPCUAServer	"opc.tcp://"	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP.Redu.Config.Active	_OPCUAServer	0	0x8300000000000101	19.06.2020 13:05:41.738
+DRV (10)/0	_OPCUA_LABSETUP.Redu.State.ConnState	_OPCUAServer	0	0x8300000000000101	19.06.2020 13:09:08.621
+UI (1)/0	_OPCUA_LABSETUP.Browse.GetBranch	_OPCUAServer	"1_WinCC_OA(1)_OPCUA Server Items", "ns=2;s=ps1", "1", "0"	0x8300000000000101	19.06.2020 13:10:09.430
+DRV (10)/0	_OPCUA_LABSETUP.Browse.RequestId	_OPCUAServer	"1_WinCC_OA(1)_OPCUA Server Items"	0x8300000000000101	19.06.2020 13:10:09.443
+DRV (10)/0	_OPCUA_LABSETUP.Browse.DisplayNames	_OPCUAServer		0x8300000000000101	19.06.2020 13:10:09.443
+DRV (10)/0	_OPCUA_LABSETUP.Browse.BrowsePaths	_OPCUAServer		0x8300000000000101	19.06.2020 13:10:09.443
+DRV (10)/0	_OPCUA_LABSETUP.Browse.NodeIds	_OPCUAServer		0x8300000000000101	19.06.2020 13:10:09.443
+DRV (10)/0	_OPCUA_LABSETUP.Browse.NodeClasses	_OPCUAServer	"OpcUa_NodeClass_Variable", "OpcUa_NodeClass_Variable", "OpcUa_NodeClass_Object", "OpcUa_NodeClass_Object", "OpcUa_NodeClass_Object"	0x8300000000000101	19.06.2020 13:10:09.443
+DRV (10)/0	_OPCUA_LABSETUP.Browse.DataTypes	_OPCUAServer	"Undefined DataType - 24", "Undefined DataType - 24", "", "", ""	0x8300000000000101	19.06.2020 13:10:09.443
+DRV (10)/0	_OPCUA_LABSETUP.Browse.ValueRanks	_OPCUAServer	"Scalar", "Scalar", "", "", ""	0x8300000000000101	19.06.2020 13:10:09.443
+DRV (10)/0	_OPCUA_LABSETUP.Browse.AccessLevels	_OPCUAServer	0x1, 0x1, 0x0, 0x0, 0x0	0x8300000000000101	19.06.2020 13:10:09.443
+UI (1)/0	_OPCUA_LABSETUP.Config.Flags	_OPCUAServer	0x0	0x8300000000000101	19.06.2020 13:05:41.738
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.RequestedLifetimeCount	_OPCUASubscription	100	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.RequestedMaxKeepAliveCount	_OPCUASubscription	10	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.MaxNotificationsPerPublish	_OPCUASubscription	0	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.PublishingEnabled	_OPCUASubscription	1	0x8300000000300101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.Priority	_OPCUASubscription	0	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.SubscriptionType	_OPCUASubscription	1	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.MonitoredItems.TimestampsToReturn	_OPCUASubscription	3	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.MonitoredItems.QueueSize	_OPCUASubscription	1	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.MonitoredItems.DiscardOldest	_OPCUASubscription	1	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.MonitoredItems.DataChangeFilter.Trigger	_OPCUASubscription	1	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.MonitoredItems.DataChangeFilter.DeadbandType	_OPCUASubscription	0	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.MonitoredItems.DataChangeFilter.DeadbandValue	_OPCUASubscription	0	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.MonitoredItems.SamplingInterval	_OPCUASubscription	0	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.Alarm.Acknowledgement	_OPCUASubscription	"", "", ""	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.Alarm.States	_OPCUASubscription		0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.Alarm.AlarmRanges	_OPCUASubscription		0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.Alarm.AlarmType	_OPCUASubscription	""	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.Alarm.Flags	_OPCUASubscription	0x0	0x8300000000000101	19.06.2020 13:14:41.529
+UI (1)/0	_OPCUA_LABSETUP_DefaultSubscription.Config.RequestedPublishingInterval	_OPCUASubscription	500	0x8300000000000101	19.06.2020 13:14:41.529

@@ -1,0 +1,25 @@
+<component>
+  <name>fwLabSetup</name>
+  <version>1.0.0</version>
+  <date>18/06/2020</date>
+  <required_pvss_version>3.16</required_pvss_version>
+  <required_installer_version>8.4.0</required_installer_version>
+  <required>fwCore=8.4.0</required>
+  <required>fwXML=8.4.0</required>
+  <required>fwTrending=8.4.0</required>
+  <init>./scripts/fwLabSetup/fwLabSetup.init</init>
+  <dplist>./dplist/fwLabSetup/fwLabSetupOpcua.dpl</dplist>
+  <dplist>./dplist/fwLabSetup/fwLabSetupDPTDefinitions.dpl</dplist>
+  <dplist>./dplist/fwLabSetup/fwLabSetupChannelTrendingPlot.dpl</dplist>
+  <file>./scripts/libs/fwLabSetup/fwLabSetup.ctl</file>
+  <file>./panels/fwLabSetup/fwLabSetupCacophony.pnl</file>
+  <file>./panels/fwLabSetup/fwLabSetupActionButton.pnl</file>
+  <file>./panels/fwLabSetup/fwLabSetupAction.pnl</file>
+  <file>./panels/fwLabSetup/fwLabSetupChannelOperation.pnl</file>
+  <file>./panels/fwLabSetup/fwLabSetupDeviceButton.pnl</file>
+  <file>./panels/fwLabSetup/fwLabSetupDevice.pnl</file>
+  <file>./panels/fwLabSetup/fwLabSetupTrendingButton.pnl</file>
+  <file>./panels/fwLabSetup/fwLabSetupTrendingPlot.pnl</file>
+  <file>./pictures/fwLabSetup/chart_line_icon.png</file>
+  <file>./fwLabSetup.xml</file>
+</component>

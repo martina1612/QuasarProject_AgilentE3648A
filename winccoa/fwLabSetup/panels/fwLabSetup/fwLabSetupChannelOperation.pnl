@@ -1,0 +1,1613 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel version="14">
+ <properties>
+  <prop name="Name">
+   <prop name="en_US.utf8">ChannelOp</prop>
+  </prop>
+  <prop name="Size">713 570</prop>
+  <prop name="BackColor">_3DFace</prop>
+  <prop name="RefPoint">0 0</prop>
+  <prop name="InitAndTermRef">True</prop>
+  <prop name="SendClick">False</prop>
+  <prop name="RefFileName"></prop>
+  <prop name="KeepInMemory">False</prop>
+  <prop name="DPI">96</prop>
+  <prop name="layoutType">None</prop>
+ </properties>
+ <events>
+  <script name="ScopeLib" isEscaped="1"><![CDATA[#uses &quot;fwLabSetup/fwLabSetup.ctl&quot;
+
+bool           g_bPanelInitialized;        // Doesn't allow initialize other shapes until DPEs has been calculated
+string         g_sDpName;                  // Channel DPE
+string         g_sDpElement;               // Channel DPE element
+dyn_dyn_string g_ddsElements;              // Object with following arrays:
+                                           //     g_ddsElements[fwDevice_ELEMENTS_INDEX]:       dp elements that can have the selected config
+                                           //     g_ddsElements[fwDevice_PROPERTY_NAMES_INDEX]: property names for the above elements
+                                           //     g_ddsElements[fwDevice_USER_DATA_INDEX]:      user data for the above elements
+                                           //     g_ddsElements[fwDevice_DESCRIPTION_INDEX]:    description for the above elements
+string         g_channelnr;                // channel number
+string         g_sDpPowersupplyName;       // Power supply DP name
+
+
+
+// Enable disable ON / OFF commands display
+void onOffDisplay(bool bEnable)
+{
+  setMultiValue(&quot;FRAME_COMMANDS&quot;,       &quot;enabled&quot;, bEnable,
+                &quot;PRIMITIVE_TEXT_ONOFF&quot;, &quot;enabled&quot;, bEnable,
+                &quot;TEXT_FIELD_ONOFF&quot;,     &quot;enabled&quot;, bEnable,
+                &quot;PUSH_BUTTON_OFF&quot;,      &quot;enabled&quot;, bEnable,
+                &quot;PUSH_BUTTON_ON&quot;,       &quot;enabled&quot;, bEnable);
+
+}// onOffDisplay()
+
+
+
+
+
+void initialize_OnOff()
+{
+  bool bEnable;
+  string sDpe;
+
+  getValue(&quot;TEXT_FIELD_ONOFF&quot;, &quot;enabled&quot;, bEnable);
+  if( FALSE == bEnable )
+  {
+    return;
+  }
+  else
+  {
+
+    sDpe   = g_sDpName + &quot;/actual.isOn&quot;;
+    if( -1 == dpConnect(&quot;onOffCB&quot;, TRUE, sDpe) )
+    {
+      setValue(&quot;TEXT_FIELD_ONOFF&quot;, &quot;color&quot;, &quot;_dpdoesnotexist&quot;);
+      return;
+    }
+  }
+
+}// initialize_OnOff()
+
+
+
+
+
+void onOffCB(string sDpe, bool bValue)
+{
+  if( TRUE == bValue )
+  {
+    setValue(&quot;TEXT_FIELD_ONOFF&quot;, &quot;text&quot;, &quot;ON&quot;);
+  }
+  else
+  {
+    setValue(&quot;TEXT_FIELD_ONOFF&quot;, &quot;text&quot;, &quot;OFF&quot;);
+  }
+
+}// initialize_OnOff()
+
+
+
+
+
+void initialize_LastModified()
+{
+  bool bEnable;
+  string sDpe;
+
+  getValue(&quot;TEXT_FIELD_LAST_MODIFIED&quot;, &quot;enabled&quot;, bEnable);
+  if( FALSE == bEnable )
+  {
+    return;
+  }
+
+  sDpe = g_sDpName + &quot;/actual.vMon&quot; + &quot;:_online.._stime&quot;;
+  if( -1 == dpConnect(&quot;lastModifiedCB&quot;, sDpe) )
+  {
+    setMultiValue(&quot;TEXT_FIELD_LAST_MODIFIED&quot;, &quot;backCol&quot;, &quot;_dpdoesnotexist&quot;,
+                  &quot;TEXT_FIELD_LAST_MODIFIED&quot;, &quot;foreCol&quot;, &quot;_dpdoesnotexist&quot;);
+  }
+
+}// initialize_LastModified()
+
+
+
+
+
+void lastModifiedCB(string sDp, string sText)
+{
+  setValue(&quot;TEXT_FIELD_LAST_MODIFIED&quot;, &quot;text&quot;, sText);
+
+}// lastModifiedCB()
+
+
+
+
+
+void initialize_SettingsTable()
+{
+  bool bEnableTable;
+  int iLoop, iLen;
+  string sReadBackSetting, sSetting, sSettingDpe, sReadBackSettingDpe, sSettingValue, sExceptionMessage;
+  dyn_string exceptionInfo, dsNotToDisplayDpes;
+  dyn_dyn_string ddsTable;
+
+
+  // Delay code until panel has initialized all global variables
+  while( !g_bPanelInitialized )
+  {
+    delay(0, 300);
+  }
+
+
+  // Initialize variables
+  bEnableTable              = FALSE;
+  gListOfDpElementToConnect = makeDynString();
+  dsNotToDisplayDpes        = makeDynString();
+//  dsNotToDisplayDpes        = makeDynString(g_sDpElement + &quot;.settings.onOff&quot;,        // DPES to don't show in the table.
+//                                            g_sDpElement + &quot;.settings.globalOnEn&quot;,
+//                                            g_sDpElement + &quot;.settings.globalOffEn&quot;);
+
+  // Prepare settings table
+  setMultiValue(&quot;TABLE_SETTINGS&quot;, &quot;sortOnClick&quot;, FALSE,
+                &quot;TABLE_SETTINGS&quot;, &quot;lineVisible&quot;, FALSE,
+                &quot;TABLE_SETTINGS&quot;, &quot;deleteAllLines&quot;);
+
+  // Display only the g_ddsElements which: &quot;.settings.X&quot; is equal to &quot;.readBack.X&quot;
+  iLen = dynlen(g_ddsElements[1]);
+  for( iLoop = 1 ; iLen &gt;= iLoop ; iLoop++ )
+  {
+
+    // Find setting DPE and remove DPEs that shouldn't be showed
+    if( (0 &lt;= strpos(g_ddsElements[1][iLoop], &quot;/settings&quot;) ) &amp;&amp;
+        (1 &gt; dynContains(dsNotToDisplayDpes, g_ddsElements[1][iLoop]) ) )
+    {
+      // Check that readBackSettings DPE exists
+      sReadBackSetting = g_ddsElements[1][iLoop];
+      strreplace(sReadBackSetting, &quot;settings&quot;, &quot;readbackSettings&quot;);
+      if( 0 &lt; dynContains(g_ddsElements[1], sReadBackSetting) )
+      {
+        sSetting = g_ddsElements[1][iLoop];
+        strreplace(sSetting, &quot;/settings&quot;, &quot;&quot;);
+
+        if( patternMatch(&quot;.PrimaryChannel&quot;, g_sDpElement) == TRUE )
+        {
+          strreplace(sSetting, &quot;.PrimaryChannel&quot;, &quot;&quot;);
+          sSettingDpe         = g_sDpName + g_ddsElements[1][iLoop];
+          sReadBackSettingDpe = g_sDpName + sReadBackSetting;
+        }
+        else
+        {
+          sSettingDpe         = g_sDpName /*+ g_sDpElement*/ + g_ddsElements[1][iLoop];
+          sReadBackSettingDpe = g_sDpName /*+ g_sDpElement*/ + sReadBackSetting;
+        }
+
+        if( dpExists(sSettingDpe) &amp;&amp; dpExists(sReadBackSettingDpe) )
+        {
+          bEnableTable = TRUE;
+
+          // Get Value and units to create a structure and publicate in the table
+          dpGet(sSettingDpe, sSettingValue);
+
+          dynAppend(gListOfSettingsDpElement, sSettingDpe);
+
+          dynAppend(ddsTable[1], substr(sSetting, strpos(sSetting, &quot;.&quot;)+1 ) );
+          dynAppend(ddsTable[2], sSettingValue);
+          dynAppend(ddsTable[3], dpGetUnit(sSettingDpe));
+          dynAppend(ddsTable[4], sSettingDpe);
+          dynAppend(ddsTable[5], sReadBackSettingDpe);
+        }
+        else
+        {
+          if (sExceptionMessage == &quot;&quot; )
+          {
+            sExceptionMessage = &quot;Error on settings table: &quot; + sExceptionMessage + &quot;. &quot; + &quot;The data point element&quot; + sSettingDpe + &quot; or &quot; + sReadBackSettingDpe + &quot; do not exist.&quot;;
+          }
+          else
+          {
+            sExceptionMessage = sExceptionMessage + &quot;. &quot; + &quot;The data point element &quot; + sSettingDpe + &quot; or &quot; + sReadBackSettingDpe + &quot; do not exist.&quot;;
+          }
+
+          continue;
+        }
+      }
+      else
+      {
+        continue;
+      }
+
+    }
+
+  }
+
+
+    iLen = dynlen(g_ddsElements[1]);
+  for( iLoop = 1 ; iLen &gt;= iLoop ; iLoop++ )
+  {
+    sReadBackSetting = g_ddsElements[1][iLoop];
+    sReadBackSettingDpe = g_sDpName /*+ g_sDpElement*/ + sReadBackSetting;
+
+    // Add to settings table also readbackSettings without a setting
+    if( (0 &lt;= strpos(g_ddsElements[1][iLoop], &quot;/readbackSettings&quot;) ) &amp;&amp;
+        (1 &gt; dynContains(ddsTable[5], sReadBackSettingDpe) ) )
+    {
+      // Check that readBackSettings DPE exists
+
+        if( dpExists(sReadBackSettingDpe) )
+        {
+          bEnableTable = TRUE;
+
+          // Get Value and units to create a structure and publicate in the table
+          //dpGet(sSettingDpe, sSettingValue);
+
+          dynAppend(gListOfSettingsDpElement, &quot;&quot;);
+
+          //strreplace(sReadBackSettingDpe, &quot;/readbackSettings&quot;, &quot;&quot;);
+
+
+          dynAppend(ddsTable[1], substr(sReadBackSettingDpe, strpos(sReadBackSettingDpe, &quot;.&quot;)+1 )  );
+          dynAppend(ddsTable[2], &quot;&quot;);
+          dynAppend(ddsTable[3], dpGetUnit(sReadBackSettingDpe));
+          dynAppend(ddsTable[4], &quot;&quot;);
+          dynAppend(ddsTable[5], sReadBackSettingDpe);
+        }
+        else
+        {
+          if (sExceptionMessage == &quot;&quot; )
+          {
+            sExceptionMessage = &quot;Error on settings table: &quot; + sExceptionMessage + &quot;. &quot; + &quot;The data point element&quot; + sSettingDpe + &quot; or &quot; + sReadBackSettingDpe + &quot; do not exist.&quot;;
+          }
+          else
+          {
+            sExceptionMessage = sExceptionMessage + &quot;. &quot; + &quot;The data point element &quot; + sSettingDpe + &quot; or &quot; + sReadBackSettingDpe + &quot; do not exist.&quot;;
+          }
+
+          continue;
+        }
+    }
+
+  }
+
+  // Initialize table with ddsTable information
+  if( FALSE == bEnableTable )
+  {
+    setValue(&quot;TABLE_SETTINGS&quot;, &quot;enabled&quot;, FALSE);
+  }
+  else
+  {
+    if( 5 == dynlen(ddsTable) )
+    {
+      setValue(&quot;TABLE_SETTINGS&quot;, &quot;appendLines&quot;, dynlen(ddsTable[1]),
+                                               &quot;element&quot;,     ddsTable[1],
+                                               &quot;settings&quot;,    ddsTable[2],
+                                               &quot;unit&quot;,        ddsTable[3],
+                                               &quot;setDpe&quot;,      ddsTable[4],
+                                               &quot;readbackDpe&quot;, ddsTable[5]);
+
+      // Connect to all settings DPE
+      iLen = dynlen(ddsTable[4]);
+      for( iLoop = 1 ; iLen &gt;= iLoop ; iLoop++ )
+      {
+        if( ddsTable[4][iLoop] != &quot;&quot; ) //avoid trying to dpConnect to empty SettingsDP
+        {
+          if( 0 != dpConnect(&quot;settingsDataCB&quot;, ddsTable[4][iLoop] ) )
+          {
+            sExceptionMessage = sExceptionMessage + &quot;. &quot; + &quot;Connection to DPE was unsucessfull: &quot; + ddsTable[4][iLoop];
+            setValue(&quot;TABLE_SETTINGS&quot;, &quot;cellBackColRC&quot;, iLoop-1 , &quot;settings&quot;, &quot;DpDoesNotExist&quot;);
+          }
+        }
+      }
+
+      // To animate setting table (ReadBack column)
+      gListOfDpElementToConnect = ddsTable[5];
+
+    }
+  }
+
+  if( &quot;&quot; != sExceptionMessage )
+  {
+    fwException_raise(exceptionInfo, &quot;ERROR&quot;, sExceptionMessage, &quot;&quot;);
+  }
+
+  // Connect ReadBackSettings column (value and color)
+  fwColourTable_connectCellBackColToValueStatus(exceptionInfo);
+  if( 0 &lt; dynlen(exceptionInfo) )
+  {
+    fwExceptionHandling_display(exceptionInfo);
+  }
+
+}// initialize_SettingsTable()
+
+
+
+
+
+void settingsDataCB(string sDpe, string sValue)
+{
+  int iCellPos;
+  string sDpName;
+
+  sDpName  = dpSubStr(sDpe, DPSUB_SYS_DP_EL);
+  iCellPos = dynContains(gListOfSettingsDpElement, sDpName);
+
+  if( 1 &lt;= iCellPos )
+  {
+    setValue(&quot;TABLE_SETTINGS&quot;, &quot;cellValueRC&quot;, (iCellPos - 1), &quot;settings&quot;, sValue);
+  }
+
+}// settingsDataCB()
+
+
+
+
+
+void initialize_ValuesTable()
+{
+  bool bEnableTable;
+  int iLoop, iLoopInt, iLen;
+  string sParameter;
+  dyn_string dsNotToDisplayDpes, exceptionInfo;
+  dyn_dyn_string ddsTable;
+
+
+  // Delay code until panel has initialized all global variables
+  while( !g_bPanelInitialized )
+  {
+    delay(0, 300);
+  }
+
+
+  // Initialize variables
+  bEnableTable              = FALSE;
+  iLoopInt                  = 1;
+  gListOfDpElementToConnect = makeDynString();
+
+
+  // Prepare values table
+  setMultiValue(&quot;TABLE_ACTUAL&quot;, &quot;sortOnClick&quot;, FALSE,
+                &quot;TABLE_ACTUAL&quot;, &quot;lineVisible&quot;, FALSE,
+                &quot;TABLE_ACTUAL&quot;, &quot;deleteAllLines&quot;);
+
+/*
+  // DPES to don't present in the table (already represented its information)
+  dsNotToDisplayDpes = makeDynString(g_sDpElement + &quot;.actual.hardwareAlarm&quot;,
+                                     g_sDpElement + &quot;.actual.iMonAlarmDefn&quot;,
+                                     g_sDpElement + &quot;.actual.status&quot;,
+                                     g_sDpElement + &quot;.actual.vMonAlarmDefn&quot;);
+*/
+  // Display the g_ddsElements which contain &quot;.actual.&quot; in the DPE name and are not in the explicit list dsNotToDisplayDpes
+  iLen = dynlen(g_ddsElements[1]);
+  for( iLoop = 1 ; iLen &gt;= iLoop ; iLoop++ )
+  {
+    if( (0 &lt;= strpos(g_ddsElements[1][iLoop], &quot;/actual&quot;) )             &amp;&amp;
+        (1 &gt; dynContains(dsNotToDisplayDpes, g_ddsElements[1][iLoop]) ) )
+    {
+      bEnableTable = TRUE;
+
+      dynAppend(gListOfDpElementToConnect, g_sDpName + g_ddsElements[1][iLoop]);
+
+      // Create structure to populate table faster
+      sParameter = g_ddsElements[2][iLoop];
+      strreplace(sParameter, &quot;/actual&quot;, &quot;&quot;);
+      dynAppend(ddsTable[1], sParameter);
+      dynAppend(ddsTable[2], dpGetUnit(g_sDpName + g_ddsElements[1][iLoop]));
+      dynAppend(ddsTable[3], g_sDpName + g_ddsElements[1][iLoop]);
+    }
+
+  }
+
+  // Add all the lines to the table
+  if( FALSE == bEnableTable )
+  {
+    setValue(&quot;TABLE_ACTUAL&quot;, &quot;enabled&quot;, FALSE);
+  }
+  else
+  {
+    setValue(&quot;TABLE_ACTUAL&quot;, &quot;appendLines&quot;, dynlen(ddsTable[1]),
+                                           &quot;parameter&quot;, ddsTable[1],
+                                           &quot;units&quot;,     ddsTable[2],
+                                           &quot;dpe&quot;,       ddsTable[3]);
+  }
+
+
+  // Animate table using default Table framework from fwGeneral
+  fwColourTable_connectCellBackColToValueStatus(exceptionInfo);
+
+}// initialize_ValuesTable()
+
+
+
+
+
+void setDpe(string sDpe, anytype aValue)
+{
+  dyn_string exceptionInfo;
+
+
+  if( 0 != dpSet(sDpe, aValue) )
+  {
+    fwException_raise(exceptionInfo, &quot;ERROR&quot;, &quot;Error setting &quot; + sDpe + &quot; to &quot; + bValue, &quot;&quot;);
+    fwExceptionHandling_display(exceptionInfo);
+  }
+
+}// setDpe()
+
+
+
+
+]]></script>
+  <script name="Close" isEscaped="1"><![CDATA[main()
+{
+  int iCloseWindow; // Avoid closing panel with &quot;X&quot; window button.
+}
+]]></script>
+  <script name="Terminate" isEscaped="1"><![CDATA[main()
+{
+  int iCloseWindow; // Avoid closing panel with &quot;X&quot; window button.
+}
+]]></script>
+  <script name="Initialize" isEscaped="1"><![CDATA[main()
+{
+  string sDeviceDpType, sDeviceModel;
+  dyn_string exceptionInfo;
+  dyn_dyn_string ddsDeviceHierarchy;  // Hierarchy object
+                                      //     [hierachy from Channel to Crate][1]: Device DP name
+                                      //     [hierachy from Channel to Crate][2]: Device position as string (keeping trailing 0s)
+                                      //     [hierachy from Channel to Crate][1]: Device position as integer (no extra 0s)
+
+
+  // Initialize global variables
+  g_bPanelInitialized = FALSE;
+  g_sDpName           = dpSubStr($sDpName, DPSUB_SYS_DP);
+  sDeviceDpType       = dpTypeName(g_sDpName);
+  g_sDpElement        = dpSubStr($sDpName, DPSUB_SYS_DP_EL);
+  strreplace(g_sDpElement, g_sDpName, &quot;&quot;);
+
+  dyn_string split = strsplit($sDpName, &quot;/&quot;);
+  g_sDpPowersupplyName = split[1];
+  string g_sDpSupplyIdn = g_sDpPowersupplyName+&quot;.idn&quot;;
+  dpGet( g_sDpSupplyIdn, sDeviceModel);
+  // Get model and model elements
+  //fwDevice_getModel(makeDynString(g_sDpName), sDeviceModel, exceptionInfo);
+  if( 0 &lt; dynlen(exceptionInfo) )
+  {
+    fwExceptionHandling_display(exceptionInfo);
+    return;
+  }
+
+
+    dyn_string split = strsplit( g_sDpName, &quot;channel&quot;);
+    dyn_string split2 = strsplit(split[8], &quot;/&quot;);
+    g_channelnr = split2[1];
+
+  fwDevice_getConfigElements(sDeviceDpType, fwDevice_ALL, g_ddsElements, exceptionInfo, sDeviceModel, g_sDpName);
+
+  if( 0 &lt; dynlen(exceptionInfo) )
+  {
+    fwExceptionHandling_display(exceptionInfo);
+    return;
+  }
+
+
+  // Display names of channel and parents only if it is an independent channel
+  // (not referenced from another datapoint)
+
+  fwLabSetup_getHierarchy($sDpName, ddsDeviceHierarchy, exceptionInfo);
+  if( 0 &lt; dynlen(exceptionInfo) )
+  {
+    fwExceptionHandling_display(exceptionInfo);
+    return;
+  }
+
+  if( $sDpName == g_sDpName )
+  {
+/*    fwDevice_getHierarchy($sDpName, ddsDeviceHierarchy, exceptionInfo);
+    if( 0 &lt; dynlen(exceptionInfo) )
+    {
+      fwExceptionHandling_display(exceptionInfo);
+      return;
+    }
+*/
+    setMultiValue(&quot;TEXT_FIELD_CHANNEL_NUMBER&quot;, &quot;text&quot;, ddsDeviceHierarchy[1][3],                        // Channel number (integer)
+                  &quot;TEXT_FIELD_BOARD_NAME&quot;,     &quot;text&quot;, dpSubStr(ddsDeviceHierarchy[2][1], DPSUB_DP),    // Board dpName
+                  &quot;TEXT_FIELD_BOARD_NUMBER&quot;,   &quot;text&quot;, ddsDeviceHierarchy[2][3] );//,                        // Board number (integer)
+  //                &quot;TEXT_FIELD_CRATE_NAME&quot;,     &quot;text&quot;, dpSubStr(ddsDeviceHierarchy[3][1], DPSUB_DP) );  // Crate dpName
+
+  }
+  else
+  {
+    setMultiValue(&quot;TEXT_FIELD_CHANNEL_NUMBER&quot;, &quot;visible&quot;, FALSE,
+                  &quot;TEXT_FIELD_BOARD_NAME&quot;,     &quot;visible&quot;, FALSE,
+                  &quot;PRIMITIVE_TEXT_BOARD&quot;,      &quot;visible&quot;, FALSE,
+                  &quot;TEXT_FIELD_BOARD_NUMBER&quot;,   &quot;visible&quot;, FALSE,
+            //      &quot;TEXT_FIELD_CRATE_NAME&quot;,     &quot;visible&quot;, FALSE,
+            //      &quot;PRIMITIVE_TEXT_CRATE&quot;,      &quot;visible&quot;, FALSE,
+                  &quot;PRIMITIVE_TEXT_SLOT&quot;,       &quot;visible&quot;, FALSE,
+                  &quot;PRIMITIVE_TEXT_NUMBER&quot;,     &quot;visible&quot;, FALSE);
+  }
+  setValue(&quot;TEXT_FIELD_CHANNEL_NAME&quot;, &quot;text&quot;, dpSubStr($sDpName, DPSUB_DP) );
+
+
+  // Enable timestamp display for Vmon if it is a valid element
+  if( 1 &gt; dynContains(g_ddsElements[1], &quot;/actual.vMon&quot;) )
+  {
+    setMultiValue(&quot;TEXT_FIELD_LAST_MODIFIED&quot;,     &quot;enabled&quot;, FALSE,
+                  &quot;PRIMITIVE_TEXT_LAST_MODIFIED&quot;, &quot;enabled&quot;, FALSE);
+  }
+  else
+  {
+    setMultiValue(&quot;TEXT_FIELD_LAST_MODIFIED&quot;,     &quot;enabled&quot;, TRUE,
+                  &quot;PRIMITIVE_TEXT_LAST_MODIFIED&quot;, &quot;enabled&quot;, TRUE);
+  }
+
+
+  // Display ON / OFF command if the channel supports it
+  if( 1 &gt; dynContains(g_ddsElements[1], &quot;/settings.onOff&quot;) )
+  {
+    onOffDisplay(FALSE);
+  }
+  else
+  {
+    // Needed in case panel loaded twice, one time immediately after the other
+    // and the on/off command is not available the first time but the second is
+    onOffDisplay(TRUE);
+  }
+
+/*
+  // Display Global ON command if the channel supports it
+  if( 1 &gt; dynContains(g_ddsElements[1], g_sDpElement + &quot;.settings.globalOnEn&quot;) )
+  {
+    globalOnDisplay(FALSE);
+  }
+  else
+  {
+    // Needed in case panel loaded twice, one time immediately after the other
+    // and the on/off command is not available the first time but the second is
+    globalOnDisplay(TRUE);
+  }
+
+
+  // Display Global OFF command if the channel supports it
+  if( 1 &gt; dynContains(g_ddsElements[1], g_sDpElement + &quot;.settings.globalOffEn&quot;) )
+  {
+    globalOffDisplay(FALSE);
+  }
+  else
+  {
+    // Needed in case panel loaded twice, one time immediately after the other
+    // and the on/off command is not available the first time but the second is
+    globalOffDisplay(TRUE);
+  }
+*/
+
+
+  // Set panel is already initialized
+  g_bPanelInitialized = TRUE;
+
+
+  // Initialize Last Modified field
+  initialize_LastModified();
+
+  // Initialize On / Off
+  initialize_OnOff();
+/*
+  // Initialize Global Off and Global On
+  initialize_GlobalOn();
+  initialize_GlobalOff();
+*/
+}
+
+
+
+
+
+
+
+]]></script>
+ </events>
+ <layers>
+  <layer layerId="0">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer1</prop>
+  </layer>
+  <layer layerId="1">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer2</prop>
+  </layer>
+  <layer layerId="2">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer3</prop>
+  </layer>
+  <layer layerId="3">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer4</prop>
+  </layer>
+  <layer layerId="4">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer5</prop>
+  </layer>
+  <layer layerId="5">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer6</prop>
+  </layer>
+  <layer layerId="6">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer7</prop>
+  </layer>
+  <layer layerId="7">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer8</prop>
+  </layer>
+ </layers>
+ <shapes>
+  <shape Name="PRIMITIVE_TEXT_TITLE" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">17</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">36 55</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">{0,0,0}</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">17</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="sizePolicy">
+     <sizePolicy vertical="Fixed" horizontal="Fixed"/>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">12 12</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,19,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.utf8">Channel Operation</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">True</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,AlignLeft]</prop>
+   </properties>
+  </shape>
+  <shape Name="PRIMITIVE_TEXT_NUMBER" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">28</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">571 150</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">{0,0,0}</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">28</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="sizePolicy">
+     <sizePolicy vertical="Fixed" horizontal="Fixed"/>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">617 52</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.utf8">Number:</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">True</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,AlignRight]</prop>
+   </properties>
+  </shape>
+  <shape Name="PRIMITIVE_TEXT_CHANNEL" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">29</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">52 119</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">{0,0,0}</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">29</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="sizePolicy">
+     <sizePolicy vertical="Fixed" horizontal="Fixed"/>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">70 52</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.utf8">Channel:</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">True</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,AlignRight]</prop>
+   </properties>
+  </shape>
+  <shape Name="PRIMITIVE_TEXT_BOARD" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">30</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">382 267</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">{0,0,0}</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">30</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="sizePolicy">
+     <sizePolicy vertical="Fixed" horizontal="Fixed"/>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">19 92</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.utf8">Power Supply:</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">True</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,AlignLeft]</prop>
+   </properties>
+  </shape>
+  <shape Name="PRIMITIVE_TEXT_SLOT" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">32</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">444 271</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">{0,0,0}</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">32</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="sizePolicy">
+     <sizePolicy vertical="Fixed" horizontal="Fixed"/>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">440 91</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.utf8">Number:</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">True</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,AlignRight]</prop>
+   </properties>
+  </shape>
+  <shape Name="PRIMITIVE_TEXT_LAST_MODIFIED" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">86</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">598 600</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">{0,0,0}</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">85</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="sizePolicy">
+     <sizePolicy vertical="Fixed" horizontal="Fixed"/>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">378 473</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.utf8">vMon Last Modified:</prop>
+    </prop>
+    <prop name="Distance">2</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">True</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,AlignLeft]</prop>
+   </properties>
+  </shape>
+  <shape Name="FRAME_COMMANDS" shapeType="FRAME" layerId="0">
+   <properties>
+    <prop name="serialId">105</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">10 539</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_3DText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">100</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Geometry">1 0 0 1 5 29</prop>
+    <prop name="BorderStyle">3D</prop>
+    <prop name="Text">
+     <prop name="en_US.utf8">Commands</prop>
+    </prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">10 468</prop>
+    <prop name="Size">570 71</prop>
+   </properties>
+  </shape>
+  <shape Name="PRIMITIVE_TEXT_ONOFF" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">107</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">78 709</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">{0,0,0}</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">101</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="sizePolicy">
+     <sizePolicy vertical="Fixed" horizontal="Fixed"/>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">76 529</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.utf8">Power</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">True</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,AlignRight]</prop>
+   </properties>
+  </shape>
+  <shape Name="TABLE_SETTINGS" shapeType="TABLE" layerId="0">
+   <properties>
+    <prop name="serialId">38</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">10 189</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_3DFace</prop>
+    <prop name="TabOrder">37</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">15 189</prop>
+    <prop name="Size">341 271</prop>
+    <prop name="ShowColumnHeader">True</prop>
+    <prop name="ShowRowHeader">False</prop>
+    <prop name="SortOnClick">True</prop>
+    <prop name="RowHeight">26</prop>
+    <prop name="RowHeaderWidth">30</prop>
+    <prop name="GridType">Cross</prop>
+    <prop name="VScrollBarMode">Auto</prop>
+    <prop name="HScrollBarMode">Auto</prop>
+    <prop name="Column">
+     <prop name="Name">element</prop>
+     <prop name="Width">100</prop>
+     <prop name="Visible">True</prop>
+     <prop name="Editable">False</prop>
+     <prop name="Label">
+      <prop name="en_US.utf8">Parameter</prop>
+     </prop>
+     <prop name="ToolTipText">
+      <prop name="en_US.utf8"></prop>
+     </prop>
+    </prop>
+    <prop name="Column">
+     <prop name="Name">settings</prop>
+     <prop name="Width">75</prop>
+     <prop name="Visible">True</prop>
+     <prop name="Editable">False</prop>
+     <prop name="Label">
+      <prop name="en_US.utf8">Setting</prop>
+     </prop>
+     <prop name="ToolTipText">
+      <prop name="en_US.utf8"></prop>
+     </prop>
+    </prop>
+    <prop name="Column">
+     <prop name="Name">status</prop>
+     <prop name="Width">90</prop>
+     <prop name="Visible">True</prop>
+     <prop name="Editable">False</prop>
+     <prop name="Label">
+      <prop name="en_US.utf8">ReadBack</prop>
+     </prop>
+     <prop name="ToolTipText">
+      <prop name="en_US.utf8"></prop>
+     </prop>
+    </prop>
+    <prop name="Column">
+     <prop name="Name">unit</prop>
+     <prop name="Width">55</prop>
+     <prop name="Visible">False</prop>
+     <prop name="Editable">False</prop>
+     <prop name="Label">
+      <prop name="en_US.utf8">Units</prop>
+     </prop>
+     <prop name="ToolTipText">
+      <prop name="en_US.utf8"></prop>
+     </prop>
+    </prop>
+    <prop name="Column">
+     <prop name="Name">setDpe</prop>
+     <prop name="Width">55</prop>
+     <prop name="Visible">False</prop>
+     <prop name="Editable">False</prop>
+     <prop name="Label">
+      <prop name="en_US.utf8">setDpe</prop>
+     </prop>
+     <prop name="ToolTipText">
+      <prop name="en_US.utf8"></prop>
+     </prop>
+    </prop>
+    <prop name="Column">
+     <prop name="Name">readbackDpe</prop>
+     <prop name="Width">55</prop>
+     <prop name="Visible">False</prop>
+     <prop name="Editable">False</prop>
+     <prop name="Label">
+      <prop name="en_US.utf8">readbackDpe</prop>
+     </prop>
+     <prop name="ToolTipText">
+      <prop name="en_US.utf8"></prop>
+     </prop>
+    </prop>
+   </properties>
+   <events>
+    <script name="Clicked" isEscaped="1"><![CDATA[main(int iPosX, string sColumnName, string sValue)
+{
+  int iColumnNumberSetting, iColumnNumberReadBack;
+  string sDpe;
+  dyn_string dsLine, exceptionInfo;
+  int confType;
+
+  getMultiValue(&quot;TABLE_SETTINGS&quot;, &quot;getLineN&quot;,     iPosX,         dsLine,
+                &quot;TABLE_SETTINGS&quot;, &quot;nameToColumn&quot;, &quot;setDpe&quot;,      iColumnNumberSetting,
+                &quot;TABLE_SETTINGS&quot;, &quot;nameToColumn&quot;, &quot;readbackDpe&quot;, iColumnNumberReadBack);
+
+  if( &quot;settings&quot; == sColumnName )
+  {
+    sDpe = dsLine[iColumnNumberSetting + 1];
+    strreplace(sDpe, g_sDpName, &quot;&quot;);
+
+
+    ChildPanelOnCentral(&quot;fwGeneral/fwChangeSetting.pnl&quot;,
+                        &quot;Settings&quot;,
+                        makeDynString(&quot;$sDpName:&quot;   + g_sDpName,
+                                      &quot;$dpSetName:&quot; + sDpe) );
+  }
+  else if( &quot;status&quot; == sColumnName )
+  {
+    sDpe = dsLine[iColumnNumberReadBack + 1];
+    dyn_mixed alertConfigObject;
+    dyn_dyn_mixed ddmAlertParam;
+    int alertType;
+    fwAlertConfig_objectGet(sDpe, alertConfigObject, exceptionInfo);
+    if( 0 &lt; dynlen(exceptionInfo) )
+      {
+        fwExceptionHandling_display(exceptionInfo);
+      }
+    ddmAlertParam = alertConfigObject[fwAlertConfig_ALERT_PARAM];
+    alertType = ddmAlertParam[fwAlertConfig_ALERT_PARAM_TYPE][1];
+
+    if (alertType != DPCONFIG_NONE )  // a readback with alert config
+      ChildPanelOnCentralModal(&quot;fwConfigs/fwAlarmOperationPopupPanel.pnl&quot;,
+                           &quot;AlarmOp&quot;,
+                            makeDynString(&quot;$sDpe:&quot; + sDpe) );
+    else   // a readback without alert config
+      {
+      fwGeneral_openDetailsPanel(sDpe, exceptionInfo);
+      if( 0 &lt; dynlen(exceptionInfo) )
+        {
+        fwExceptionHandling_display(exceptionInfo);
+        }
+      }
+   }
+  else
+  {
+    sDpe = dsLine[iColumnNumberReadBack + 1];
+    fwGeneral_openDetailsPanel(sDpe, exceptionInfo);
+    if( 0 &lt; dynlen(exceptionInfo) )
+    {
+      fwExceptionHandling_display(exceptionInfo);
+    }
+  }
+
+}
+
+
+
+]]></script>
+    <script name="Initialize" isEscaped="1"><![CDATA[dyn_string gListOfDpElementToConnect;
+dyn_string gListOfSettingsDpElement;
+
+main()
+{
+  initialize_SettingsTable();
+
+}
+
+]]></script>
+   </events>
+  </shape>
+  <shape Name="TEXT_FIELD_CHANNEL_NAME" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">34</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">241 146</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_3DFace</prop>
+    <prop name="TabOrder">34</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">74 50</prop>
+    <prop name="Size">477 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">False</prop>
+    <prop name="TextFormat">[0s,,,AlignLeft]</prop>
+   </properties>
+  </shape>
+  <shape Name="TEXT_FIELD_BOARD_NAME" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">35</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">770 310</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_3DFace</prop>
+    <prop name="TabOrder">35</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">112.5 87</prop>
+    <prop name="Size">264 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">False</prop>
+    <prop name="TextFormat">[0s,,,AlignLeft]</prop>
+   </properties>
+  </shape>
+  <shape Name="TEXT_FIELD_BOARD_NUMBER" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">37</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">610 290</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_3DFace</prop>
+    <prop name="TabOrder">37</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">447 88</prop>
+    <prop name="Size">51 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">False</prop>
+    <prop name="TextFormat">[0s,,,AlignLeft]</prop>
+   </properties>
+  </shape>
+  <shape Name="TABLE_ACTUAL" shapeType="TABLE" layerId="0">
+   <properties>
+    <prop name="serialId">41</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">360 190</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_3DFace</prop>
+    <prop name="TabOrder">40</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">365 190</prop>
+    <prop name="Size">331 270</prop>
+    <prop name="ShowColumnHeader">True</prop>
+    <prop name="ShowRowHeader">False</prop>
+    <prop name="SortOnClick">True</prop>
+    <prop name="RowHeight">26</prop>
+    <prop name="RowHeaderWidth">30</prop>
+    <prop name="GridType">Cross</prop>
+    <prop name="VScrollBarMode">Auto</prop>
+    <prop name="HScrollBarMode">Auto</prop>
+    <prop name="Column">
+     <prop name="Name">parameter</prop>
+     <prop name="Width">100</prop>
+     <prop name="Visible">True</prop>
+     <prop name="Editable">False</prop>
+     <prop name="Label">
+      <prop name="en_US.utf8">Parameter</prop>
+     </prop>
+     <prop name="ToolTipText">
+      <prop name="en_US.utf8"></prop>
+     </prop>
+    </prop>
+    <prop name="Column">
+     <prop name="Name">status</prop>
+     <prop name="Width">150</prop>
+     <prop name="Visible">True</prop>
+     <prop name="Editable">False</prop>
+     <prop name="Label">
+      <prop name="en_US.utf8">Value</prop>
+     </prop>
+     <prop name="ToolTipText">
+      <prop name="en_US.utf8"></prop>
+     </prop>
+    </prop>
+    <prop name="Column">
+     <prop name="Name">units</prop>
+     <prop name="Width">55</prop>
+     <prop name="Visible">False</prop>
+     <prop name="Editable">False</prop>
+     <prop name="Label">
+      <prop name="en_US.utf8">Units</prop>
+     </prop>
+     <prop name="ToolTipText">
+      <prop name="en_US.utf8"></prop>
+     </prop>
+    </prop>
+    <prop name="Column">
+     <prop name="Name">dpe</prop>
+     <prop name="Width">55</prop>
+     <prop name="Visible">False</prop>
+     <prop name="Editable">False</prop>
+     <prop name="Label">
+      <prop name="en_US.utf8">dpe</prop>
+     </prop>
+     <prop name="ToolTipText">
+      <prop name="en_US.utf8"></prop>
+     </prop>
+    </prop>
+   </properties>
+   <events>
+    <script name="Clicked" isEscaped="1"><![CDATA[main(int iPosX, string sColumnName, string sValue)
+{
+  int iColumnNumber;
+  string sDpe;
+  dyn_string dsLine, exceptionInfo;
+
+  getMultiValue(&quot;TABLE_ACTUAL&quot;, &quot;getLineN&quot;, iPosX, dsLine,
+                &quot;TABLE_ACTUAL&quot;, &quot;nameToColumn&quot;, &quot;dpe&quot;, iColumnNumber);
+
+  sDpe = dsLine[iColumnNumber + 1];
+  if( &quot;status&quot; == sColumnName )
+  {
+    ChildPanelOnCentralModal(&quot;fwConfigs/fwAlarmOperationPopupPanel.pnl&quot;,
+                             &quot;AlarmOp&quot;,
+                             makeDynString(&quot;$sDpe:&quot; + sDpe) );
+  }
+  else
+  {
+    fwGeneral_openDetailsPanel(sDpe, exceptionInfo);
+    if( 0 &lt; dynlen(exceptionInfo) )
+    {
+      fwExceptionHandling_display(exceptionInfo);
+    }
+  }
+
+}
+
+
+
+]]></script>
+    <script name="Initialize" isEscaped="1"><![CDATA[dyn_string gListOfDpElementToConnect;
+
+main()
+{
+  initialize_ValuesTable();
+}]]></script>
+   </events>
+  </shape>
+  <shape Name="PUSH_BUTTON_ON" shapeType="PUSH_BUTTON" layerId="0">
+   <properties>
+    <prop name="serialId">78</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">127 526</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_ButtonText</prop>
+    <prop name="BackColor">_Button</prop>
+    <prop name="TabOrder">77</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">127 526</prop>
+    <prop name="Size">41 25</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Text">
+     <prop name="en_US.utf8">On</prop>
+    </prop>
+   </properties>
+   <events>
+    <script name="Clicked" isEscaped="1"><![CDATA[main()
+{
+  bool bValue;
+  string sDpe;
+
+  sDpe   = g_sDpName + &quot;/settings.onOff&quot;;
+//  sDpe   = g_sDpName + g_sDpElement + &quot;.settings.onOff&quot;;
+  bValue = TRUE;
+
+  setDpe(sDpe, bValue);
+
+}
+
+
+]]></script>
+   </events>
+  </shape>
+  <shape Name="PUSH_BUTTON_OFF" shapeType="PUSH_BUTTON" layerId="0">
+   <properties>
+    <prop name="serialId">79</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">283 934</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_ButtonText</prop>
+    <prop name="BackColor">_Button</prop>
+    <prop name="TabOrder">78</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">173 526</prop>
+    <prop name="Size">41 25</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Text">
+     <prop name="en_US.utf8">Off</prop>
+    </prop>
+   </properties>
+   <events>
+    <script name="Clicked" isEscaped="1"><![CDATA[main()
+{
+  bool bValue;
+  string sDpe;
+
+  sDpe   = g_sDpName + &quot;/settings.onOff&quot;;
+//  sDpe   = g_sDpName + g_sDpElement + &quot;.settings.onOff&quot;;
+  bValue = FALSE;
+
+  setDpe(sDpe, bValue);
+
+}
+
+
+
+]]></script>
+   </events>
+  </shape>
+  <shape Name="TEXT_FIELD_LAST_MODIFIED" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">88</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">495 468</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_3DFace</prop>
+    <prop name="TabOrder">87</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">495 468</prop>
+    <prop name="Size">191 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">False</prop>
+    <prop name="TextFormat">[0s,,,AlignLeft]</prop>
+   </properties>
+  </shape>
+  <shape Name="PUSH_BUTTON_CLOSE" shapeType="PUSH_BUTTON" layerId="0">
+   <properties>
+    <prop name="serialId">104</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">621 544</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_ButtonText</prop>
+    <prop name="BackColor">_Button</prop>
+    <prop name="TabOrder">100</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">621 544</prop>
+    <prop name="Size">74 25</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Text">
+     <prop name="en_US.utf8">Close</prop>
+    </prop>
+   </properties>
+   <events>
+    <script name="Clicked" isEscaped="1"><![CDATA[main()
+{
+  PanelOff();
+}
+]]></script>
+   </events>
+  </shape>
+  <shape Name="TEXT_FIELD_ONOFF" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">108</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">213 736</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_3DFace</prop>
+    <prop name="TabOrder">102</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">83 526</prop>
+    <prop name="Size">41 25</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">False</prop>
+    <prop name="TextFormat">[0s,,,AlignLeft]</prop>
+   </properties>
+  </shape>
+  <shape Name="TEXT_FIELD_CHANNEL_NUMBER" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">33</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">640 174</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_3DFace</prop>
+    <prop name="TabOrder">33</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">620 50</prop>
+    <prop name="Size">51 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">False</prop>
+    <prop name="TextFormat">[0s,,,AlignLeft]</prop>
+   </properties>
+  </shape>
+  <shape Name="PUSH_BUTTON_LOAD" shapeType="PUSH_BUTTON" layerId="0">
+   <properties>
+    <prop name="serialId">106</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">23 465</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_ButtonText</prop>
+    <prop name="BackColor">_Button</prop>
+    <prop name="TabOrder">101</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.utf8"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.utf8">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">23 465</prop>
+    <prop name="Size">183 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Text">
+     <prop name="en_US.utf8">Load settings from hardware</prop>
+    </prop>
+   </properties>
+   <events>
+    <script name="Clicked" isEscaped="1"><![CDATA[main()
+{
+  int iLoop, iLen;
+  float fValue;
+  string sSetDpe, sReadBackDpe;
+  dyn_string dsLine;
+
+  getValue(&quot;TABLE_SETTINGS&quot;, &quot;lineCount&quot;, iLen);
+  for( iLoop = 1 ; iLen &gt;= iLoop ; iLoop++ )
+  {
+    dsLine       = TABLE_SETTINGS.getLineN(iLoop - 1);
+    sSetDpe      = dsLine[TABLE_SETTINGS.nameToColumn(&quot;setDpe&quot;) + 1];
+    sReadBackDpe = dsLine[TABLE_SETTINGS.nameToColumn(&quot;readbackDpe&quot;) + 1];
+
+    if( dpExists(sReadBackDpe) &amp;&amp; dpExists(sSetDpe) )
+    {
+      dpGet(sReadBackDpe, fValue);
+      dpSet(sSetDpe,      fValue);
+
+      DebugN(&quot;Setting &quot; + sSetDpe + &quot; to same value as &quot; + sReadBackDpe + &quot;. Value = &quot; + fValue);
+    }
+  }
+
+}
+
+
+
+
+
+]]></script>
+   </events>
+  </shape>
+  <reference parentSerial="-1" Name="PANEL_REF1" referenceId="0">
+   <properties>
+    <prop name="FileName">fwLabSetup/fwLabSetupActionButton.pnl</prop>
+    <prop name="Location">460.5 19</prop>
+    <prop name="Geometry">1 0 0 1 -30.5 91</prop>
+    <prop name="TabOrder">103</prop>
+    <prop name="dollarParameters">
+     <prop name="dollarParameter">
+      <prop name="Dollar">$sDpName</prop>
+      <prop name="Value">$sDpName</prop>
+     </prop>
+    </prop>
+    <prop name="layoutAlignment">AlignNone</prop>
+   </properties>
+  </reference>
+  <reference parentSerial="-1" Name="PANEL_REF2" referenceId="1">
+   <properties>
+    <prop name="FileName">fwLabSetup/fwLabSetupDeviceButton.pnl</prop>
+    <prop name="Location">449.5 95</prop>
+    <prop name="Geometry">1 0 0 1 90.5 25</prop>
+    <prop name="TabOrder">103</prop>
+    <prop name="dollarParameters">
+     <prop name="dollarParameter">
+      <prop name="Dollar">$sDpName</prop>
+      <prop name="Value">$sDpName</prop>
+     </prop>
+    </prop>
+    <prop name="layoutAlignment">AlignNone</prop>
+    <script name="Initialize" isEscaped="1"><![CDATA[main()
+{
+
+}
+]]></script>
+   </properties>
+  </reference>
+  <reference parentSerial="-1" Name="PANEL_REF3" referenceId="2">
+   <properties>
+    <prop name="FileName">fwLabSetup/fwLabSetupTrendingButton.pnl</prop>
+    <prop name="Location">-14.5 134</prop>
+    <prop name="Geometry">1 0 0 1 -25.5 -24</prop>
+    <prop name="TabOrder">103</prop>
+    <prop name="dollarParameters">
+     <prop name="dollarParameter">
+      <prop name="Dollar">$sDpName</prop>
+      <prop name="Value">$sDpName</prop>
+     </prop>
+    </prop>
+    <prop name="layoutAlignment">AlignNone</prop>
+   </properties>
+  </reference>
+ </shapes>
+</panel>

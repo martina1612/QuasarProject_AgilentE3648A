@@ -1,0 +1,81 @@
+int main()
+{
+  dyn_string exceptionInfo;
+
+
+  DebugTN("fwLabSetup.init script: running script");
+
+  // Add OPC UA 10 manager and simulator
+  if( fwLabSetup_init_AddManager(10, "Quasar OPC UA connection to hardware", "opcua") == FALSE )
+  {
+    DebugTN("fwLabSetup.init script: Error adding the OPC UA client driver number 10");
+    return -1;
+  }
+
+
+
+  // Cleanup obsolete files
+  fwInstallation_cleanupObsoleteFiles("fwLabSetup", makeDynString("fwLabSetupReleaseNotes.txt"));
+
+
+  DebugTN("fwLabSetup.init script: finished executing init file");
+  return 0;
+}
+
+
+
+
+
+bool fwLabSetup_init_AddManager(int iDriverNumber, string sMessage, string sManagerType)
+{
+  int iResult;
+  string sResultText, sManagerLabel;
+
+
+  iResult = fwInstallationManager_appendDriver("SIM",
+                                               sMessage,
+                                               fwInstallation_getWCCOAExecutable(sManagerType),
+                                               "always",
+                                               30,
+                                               2,
+                                               2,
+                                               "-num " + iDriverNumber);
+  switch( iResult )
+  {
+    case 1:
+      sResultText = "OK";
+      break;
+
+    case 2:
+      sResultText = "Already exists";
+      break;
+
+    case 0:
+      sResultText = "User declined to add it";
+      break;
+
+    default:
+      sResultText = "Failed";
+      DebugTN("fwLabSetup_init_AddManager() -> Error adding driver number " + iDriverNumber + " (" + sManagerType + " and SIM): " + sResultText + ", original error: " + iResult);
+      return FALSE;
+      break;
+  }
+
+  switch( sManagerType )
+  {
+    case "opc":
+      sManagerLabel = "OPC DA";
+      break;
+
+    case "opcua":
+      sManagerLabel = "OPC UA";
+      break;
+
+    default:
+      sManagerLabel = sManagerType;
+  }
+
+  DebugTN("fwLabSetup_init_AddManager() -> Added driver number " + iDriverNumber + " (" + sManagerLabel + " and SIM): " + sResultText);
+  return TRUE;
+
+}

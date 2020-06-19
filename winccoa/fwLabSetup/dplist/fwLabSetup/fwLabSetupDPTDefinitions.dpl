@@ -1,0 +1,138 @@
+# ascii dump of database
+
+# Datapoint/DpId
+DpName	TypeName	ID
+Gpib_ChannelInfo	_FwDeviceDefinition	2859675
+Gpib_GpibPowerSupplyInfo	_FwDeviceDefinition	2859684
+
+# DpValue
+Manager/User	ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+UI (1)/0	Gpib_ChannelInfo.type	_FwDeviceDefinition	"Gpib_Channel"	0x8300000000000101	09.06.2020 12:25:42.329
+UI (1)/0	Gpib_ChannelInfo.dpType	_FwDeviceDefinition	"Gpib_Channel"	0x8300000000000101	09.06.2020 12:25:42.329
+UI (1)/0	Gpib_ChannelInfo.properties.names	_FwDeviceDefinition	"/actual.isOn", "/actual.trip", "/actual.iMon", "/actual.vMon", "/settings.i0", "/settings.v0", "/settings.onOff", "/settings.vRange", "/settings.vProtection", "/readbackSettings.i0", "/readbackSettings.iRangeMax", "/readbackSettings.iRangeMin", "/readbackSettings.onOff", "/readbackSettings.v0", "/readbackSettings.vProtection", "/readbackSettings.vRange", "/readbackSettings.vRangeMax", "/readbackSettings.vRangeMin"	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.properties.dpes	_FwDeviceDefinition	"/actual.isOn", "/actual.trip", "/actual.iMon", "/actual.vMon", "/settings.i0", "/settings.v0", "/settings.onOff", "/settings.vRange", "/settings.vProtection", "/readbackSettings.i0", "/readbackSettings.iRangeMax", "/readbackSettings.iRangeMin", "/readbackSettings.onOff", "/readbackSettings.v0", "/readbackSettings.vProtection", "/readbackSettings.vRange", "/readbackSettings.vRangeMax", "/readbackSettings.vRangeMin"	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.properties.description	_FwDeviceDefinition	"Channel on", "Trip", "Current current", "Current voltage", "Current limit set point", "Voltage set point", "Switch on/off", "Voltage range setting", "Set voltage protection enabled/disabled", "Current limit readback", "Current range maximum readback", "Current range minimum readback", "Channel on/off readback", "Voltage set point readback", "Voltage protection enabled/disabled readback", "Voltage range readback", "Voltage range maximum readback", "Voltage range minimum readback"	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.configuration.address.canHave	_FwDeviceDefinition		0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.configuration.address.general.defaultType	_FwDeviceDefinition	"NO HARDWARE CONNECTION"	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.configuration.address.OPC.general.canHave	_FwDeviceDefinition	0	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.configuration.address.DIM.general.canHave	_FwDeviceDefinition	0	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.configuration.dpFunction.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.configuration.alert.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.configuration.archive.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.configuration.smoothing.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.configuration.pvRange.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.configuration.format.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.configuration.unit.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.panels.navigator.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x8300000000000101	09.06.2020 12:25:42.329
+UI (1)/0	Gpib_ChannelInfo.panels.navigator.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x8300000000000101	09.06.2020 12:25:42.329
+UI (1)/0	Gpib_ChannelInfo.panels.editor.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage", "fwDevice/fwDeviceExpertConfiguration"	0x8300000000000101	09.06.2020 12:25:42.329
+UI (1)/0	Gpib_ChannelInfo.panels.editor.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x8300000000000101	09.06.2020 12:25:42.329
+UI (1)/0	Gpib_ChannelInfo.panels.editor.expert	_FwDeviceDefinition	"fwDevice/fwDeviceConfigurationExpert"	0x8300000000000101	09.06.2020 12:25:42.329
+UI (1)/0	Gpib_ChannelInfo.properties.defaultValues	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.configuration.conversion.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.properties.types	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	09.06.2020 12:25:42.862
+UI (1)/0	Gpib_ChannelInfo.properties.userData	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	09.06.2020 12:25:42.862
+Manager/User	ElementName	TypeName	_original.._value	_original.._status64	_original.._stime
+UI (1)/0	Gpib_GpibPowerSupplyInfo.type	_FwDeviceDefinition	"Gpib_GpibPowerSupply"	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.dpType	_FwDeviceDefinition	"Gpib_GpibPowerSupply"	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.version	_FwDeviceDefinition	""	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.properties.names	_FwDeviceDefinition	".device_descriptor", ".idn", "/commands.reset", "/commands.clear", "/commands.clearTrip", "/onRequest.askError", "/onRequest.error"	0x8300000000000101	11.06.2020 18:41:01.134
+UI (1)/0	Gpib_GpibPowerSupplyInfo.properties.dpes	_FwDeviceDefinition	".device_descriptor", ".idn", "/commands.reset", "/commands.clear", "/commands.clearTrip", "/onRequest.askError", "/onRequest.error"	0x8300000000000101	11.06.2020 18:41:01.135
+UI (1)/0	Gpib_GpibPowerSupplyInfo.properties.description	_FwDeviceDefinition	"Value assigned by ibdev()", "Reply to *IDN?", "Send *RST command", "Send *CLS command", "Send VOLT:PROT:clear command", "Send SYST:ERR?", "Reply to SYST:ERR? received"	0x8300000000000101	11.06.2020 18:41:01.135
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.135
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.general.defaultType	_FwDeviceDefinition	"NO HARDWARE CONNECTION"	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPC.items	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.135
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPC.groups	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.135
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPC.general.canHave	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPC.general.serverName	_FwDeviceDefinition	""	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPC.general.driverNumber	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPC.general.groupIn	_FwDeviceDefinition	""	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPC.general.groupOut	_FwDeviceDefinition	""	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.DIM.items	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.137
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.DIM.general.canHave	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.DIM.general.driverNumber	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.DIM.general.timeInterval	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.DIM.general.timeStamp	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.dpFunction.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.137
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.dpFunction.function	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.137
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.dpFunction.params	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.137
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.alert.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.137
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.alert.defaultClasses	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.alert.defaultTexts	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.archive.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.archive.defaultClass	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.archive.smoothType	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.archive.smoothProcedure	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.archive.deadband	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.archive.timeInterval	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.smoothing.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.smoothing.smoothProcedure	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.smoothing.deadband	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.smoothing.timeInterval	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.pvRange.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.139
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.pvRange.minValue	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.139
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.pvRange.maxValue	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.139
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.pvRange.negateRange	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.139
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.pvRange.ignoreOutside	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.139
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.pvRange.inclusiveMin	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.139
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.pvRange.inclusiveMax	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.139
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.format.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.139
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.format.format	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.139
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.unit.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.139
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.unit.unit	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.139
+UI (1)/0	Gpib_GpibPowerSupplyInfo.panels.navigator.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.panels.navigator.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.panels.editor.hardware	_FwDeviceDefinition	"fwDevice/fwDeviceManage", "fwDevice/fwDeviceExpertConfiguration"	0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.panels.editor.logical	_FwDeviceDefinition	"fwDevice/fwDeviceManage"	0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.panels.editor.expert	_FwDeviceDefinition	"fwDevice/fwDeviceConfigurationExpert"	0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.properties.defaultValues	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.135
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPC.direction	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.135
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.DIM.direction	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.137
+UI (1)/0	Gpib_GpibPowerSupplyInfo.general.childrenDPTypes	_FwDeviceDefinition		0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.general.nameRoot	_FwDeviceDefinition	""	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.general.nameDigits	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.conversion.canHave	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.conversion.type	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.general.startingNumber	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.panels.editor.hardwareAdd	_FwDeviceDefinition		0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.panels.editor.hardwareRemove	_FwDeviceDefinition		0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.canHaveDefaults	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.properties.types	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.135
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.alert.defaultLimits	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.138
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.conversion.conversionType	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.conversion.order	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.conversion.arguments	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.properties.userData	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.135
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.S7.items	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.136
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.S7.groups	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.136
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.S7.types	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.136
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.S7.direction	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.136
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.S7.lowLevel	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.136
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.S7.general.driverNumber	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.S7.general.s7Start	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.S7.general.s7SubIndex	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.S7.general.s7Interval	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.S7.general.autoSmooth	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.S7.general.canHave	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.SNMP.items	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.136
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.SNMP.groups	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.137
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.SNMP.types	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.137
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.SNMP.direction	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.137
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.SNMP.agentVersions	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.137
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.SNMP.general.driverNumber	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.SNMP.general.canHave	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.SNMP.general.autoSmooth	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.SNMP.subindexes	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.137
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.SNMP.agentIds	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.137
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPCUA.items	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.135
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPCUA.subscriptions	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.135
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPCUA.kinds	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.136
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPCUA.variants	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.136
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPCUA.types	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.136
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPCUA.direction	_FwDeviceDefinition	0, 0, 0, 0, 0, 0, 0	0x8300000000000101	11.06.2020 18:41:01.136
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPCUA.general.canHave	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.140
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPCUA.general.serverName	_FwDeviceDefinition	""	0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPCUA.general.driverNumber	_FwDeviceDefinition	0	0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPCUA.pollGroups	_FwDeviceDefinition	"EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY"	0x8300000000000101	11.06.2020 18:41:01.136
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPCUA.general.subscriptionIn	_FwDeviceDefinition	""	0x8300000000000101	11.06.2020 18:41:01.141
+UI (1)/0	Gpib_GpibPowerSupplyInfo.configuration.address.OPCUA.general.subscriptionOut	_FwDeviceDefinition	""	0x8300000000000101	11.06.2020 18:41:01.141
