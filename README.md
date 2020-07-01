@@ -33,7 +33,7 @@ TCP network layer listening on opc.tcp://control-6.pixel.ge.infn.it:4841/
 will show the server address.
 
 ### Installing the WinCC OA package
-Before installing the fwLabSetup component into a WinCC OA project edit file `winccoa/fwLabSetup/dplist/fwLabSetup/fwLabSetupOpcua.dpl `: at line 9 replace `opc.tcp://control-6.pixel.ge.infn.it:4841/` with your server address.
+Before installing the fwLabSetup component into a WinCC OA project edit file `winccoa/fwLabSetup/dplist/fwLabSetup/fwLabSetupOpcua.dpl `: at line 17 replace `opc.tcp://control-6.pixel.ge.infn.it:4841/` with your server address.
 
 In order to import the necessary DPTs and DPs to  a WinCC OA project, add Cacophony to your server project. In the server main directory, run
 ```
